@@ -1,18 +1,9 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Hello from "./components/hello";
+import ChatInputForm from "./components/ChatInputForm";
+import MessageContainer from "./components/MessageContainer";
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      names: [],
-      highlightedGreeting: null,
-      filter: ""
-    };
-  }
-
   componentDidMount() {
     fetch("https://api.github.com/users/frosner")
         .then(response => response.json())
@@ -23,34 +14,16 @@ class App extends Component {
         })
   }
 
-  handleHighlightGreeting = (name) => () => {
-      this.setState({
-         highlightedGreeting: name
-      });
-  };
-
-  handleFilter = (event) => {
-    this.setState({
-        filter: event.target.value
-    });
+  handleMessageSubmit = (message) => (event) => {
+    event.preventDefault();
+    console.log(message); // TODO send message to server
   };
 
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <input type={"text"} placeholder={"Filter..."} value={this.state.filter} onChange={this.handleFilter} />
-          <img src={logo} className="App-logo" alt="logo" />
-            {this.state.names.filter((name) => name.includes(this.state.filter)).map((name) => {
-              const highlighted = name === this.state.highlightedGreeting;
-              return <Hello
-                  key={name}
-                  name={name}
-                  highlighted={highlighted}
-                  handleHighlightGreeting={this.handleHighlightGreeting}
-              />
-            })}
-        </header>
+      <div>
+          <ChatInputForm id={"mainChatInputForm"} handleMessageSubmit={this.handleMessageSubmit}/>
+          <MessageContainer id={"mainMessageContainer"}/>
       </div>
     );
   }
